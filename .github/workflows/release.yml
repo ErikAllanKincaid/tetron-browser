@@ -1,0 +1,94 @@
+name: Release
+
+# Builds the tetron-browser release for linux-amd64 and attaches it to the
+# GitHub Release: the zip (Carbonyl v0.0.3 Chromium runtime plus
+# libcarbonyl.so built from this tree on Debian 12), its .sha256, and a .deb
+# built with the shared tetron-packaging action and install-tested in a clean
+# debian:trixie container before upload.
+#
+# Triggers, as in the other tetron repos:
+#   * push a tag v*           - the tag must equal "v" + Cargo.toml's version.
+#   * push to main whose Cargo.toml version has no tag yet - tags and releases.
+#   * workflow_dispatch       - rebuild an existing tag (e.g. v0.15.0).
+
+on:
+  push:
+    tags: ["v*"]
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build (e.g. v0.15.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.d.outputs.release }}
+      tag: ${{ steps.d.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: d
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          case "$GITHUB_EVENT_NAME/$GITHUB_REF_TYPE" in
+            workflow_dispatch/*) tag=$INPUT_TAG; release=true ;;
+            push/tag) tag=$GITHUB_REF_NAME; release=true
+              [ "$tag" = "v$version" ] || { echo "tag $tag does not match Cargo.toml version $version" >&2; exit 1; } ;;
+            *) tag=v$version
+              if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then release=false; else release=true; fi ;;
+          esac
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+          echo "tag $tag, release $release"
+
+  build:
+    needs: decide
+    if: needs.decide.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && needs.decide.outputs.tag || github.sha }}
+
+      # Rust in a debian:bookworm container (glibc 2.36), so the library runs
+      # on Debian 12 and later; the script runs the tests first.
+      - name: Build release zip
+        run: scripts/release-tetron-browser.sh dist
+
+      - name: Unpack the tree for the .deb
+        run: |
+          mkdir -p packaging/tree
+          unzip -j -o dist/tetron-browser.linux-amd64.zip -d packaging/tree
+          ls -l packaging/tree
+
+      - name: Build .deb
+        id: deb
+        uses: ErikAllanKincaid/tetron-packaging@71b3876c5a34bb7fab8e8558fc87d89f8c228bdc
+        with:
+          binary: packaging/tree/carbonyl
+          deb-toml: packaging/deb.toml
+          version: ${{ needs.decide.outputs.tag }}
+          arch: amd64
+          smoke: tetron-browser --version
+
+      - name: Attach to release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Creates the tag (at this run's commit) and the release if missing,
+          # else attaches to the existing tag's release.
+          tag_name: ${{ needs.decide.outputs.tag }}
+          body: "See changelog.md for the release notes. The .deb installs on Debian 12 and later (amd64)."
+          files: |
+            dist/tetron-browser.linux-amd64.zip
+            dist/tetron-browser.linux-amd64.zip.sha256
+            ${{ steps.deb.outputs.deb }}
+            ${{ steps.deb.outputs.sha256 }}

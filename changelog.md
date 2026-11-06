@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
+- Releases are built by GitHub Actions on a v* tag: the linux-amd64 zip, its .sha256 and a .deb for Debian 12 and later (packaging/deb.toml, built with tetron-packaging)
 - Renamed to tetron-browser, a maintained continuation of Carbonyl: `--version` and `--help` say tetron-browser
 - Versioned with the tetron suite: the minor version follows tetron core (0.15), based on Carbonyl 0.0.3
 

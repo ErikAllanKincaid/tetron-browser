@@ -10,3 +10,4 @@ node_modules/
 !/chromium/depot_tools
 !/chromium/patches
 /packages/*/build
+/packaging/tree/

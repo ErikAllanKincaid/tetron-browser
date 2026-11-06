@@ -1,0 +1,85 @@
+# Package description for mkdeb (https://github.com/ErikAllanKincaid/tetron-packaging),
+# built by the release workflow from the release zip, which is unpacked into
+# packaging/tree/ first. Paths are relative to this file.
+name = "tetron-browser"
+description = "Chromium based web browser that runs in a terminal"
+long_description = """
+tetron-browser renders web pages with Chromium and draws them in the
+terminal with truecolor blocks, with mouse and keyboard input. It is a
+maintained continuation of Carbonyl: the Carbonyl v0.0.3 Chromium runtime
+with a rebuilt libcarbonyl.so. The command is tetron-browser; its files are
+in /usr/lib/tetron-browser."""
+section = "web"
+license = "BSD-3-Clause"
+homepage = "https://github.com/ErikAllanKincaid/tetron-browser"
+maintainer = "TetronOS <noreply@tetron.invalid>"
+# The earlier TetronOS package of upstream Carbonyl.
+# libcarbonyl.so needs glibc 2.34; mkdeb reads only the Chromium binary (2.17).
+depends = ["libc6 (>= 2.34)"]
+conflicts = ["carbonyl"]
+smoke = "tetron-browser --version"
+
+# libasound2t64 (Debian 13) provides libasound2, so one name works on 12 and 13.
+# libcarbonyl.so ships in this package.
+[soname_map]
+"libnss3.so" = "libnss3"
+"libnssutil3.so" = "libnss3"
+"libnspr4.so" = "libnspr4"
+"libexpat.so.1" = "libexpat1"
+"libasound.so.2" = "libasound2"
+"libcarbonyl.so" = ""
+
+[[files]]
+src = "binary"
+dst = "usr/lib/tetron-browser/carbonyl"
+mode = "0755"
+
+[[files]]
+src = "tetron-browser"
+dst = "usr/bin/tetron-browser"
+mode = "0755"
+
+[[files]]
+src = "copyright"
+dst = "usr/share/doc/tetron-browser/copyright"
+mode = "0644"
+
+[[files]]
+src = "tree/libcarbonyl.so"
+dst = "usr/lib/tetron-browser/libcarbonyl.so"
+mode = "0755"
+
+[[files]]
+src = "tree/libEGL.so"
+dst = "usr/lib/tetron-browser/libEGL.so"
+mode = "0755"
+
+[[files]]
+src = "tree/libGLESv2.so"
+dst = "usr/lib/tetron-browser/libGLESv2.so"
+mode = "0755"
+
+[[files]]
+src = "tree/libvk_swiftshader.so"
+dst = "usr/lib/tetron-browser/libvk_swiftshader.so"
+mode = "0755"
+
+[[files]]
+src = "tree/libvulkan.so.1"
+dst = "usr/lib/tetron-browser/libvulkan.so.1"
+mode = "0755"
+
+[[files]]
+src = "tree/icudtl.dat"
+dst = "usr/lib/tetron-browser/icudtl.dat"
+mode = "0644"
+
+[[files]]
+src = "tree/v8_context_snapshot.bin"
+dst = "usr/lib/tetron-browser/v8_context_snapshot.bin"
+mode = "0644"
+
+[[files]]
+src = "tree/vk_swiftshader_icd.json"
+dst = "usr/lib/tetron-browser/vk_swiftshader_icd.json"
+mode = "0644"
