@@ -1,5 +1,5 @@
 use std::{
-    sync::mpsc::{self, Receiver, Sender},
+    sync::mpsc::{self, Receiver, RecvTimeoutError, Sender},
     thread::{self, JoinHandle},
     time::Instant,
 };
@@ -73,11 +73,20 @@ impl RenderThread {
                     // until we get a message, after which we schedule a render.
                     wait = false;
 
-                    rx.recv().ok()
+                    match rx.recv() {
+                        Ok(message) => Some(message),
+                        // Every sender is gone: nothing can wake this thread
+                        // again. Looping here spun one core at 100%.
+                        Err(_) => return,
+                    }
                 } else {
                     // On subsequence iterations, we want to process a maximum
                     // number of events until the deadline for the next frame.
-                    rx.recv_timeout(deadline - Instant::now()).ok()
+                    match rx.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+                        Ok(message) => Some(message),
+                        Err(RecvTimeoutError::Timeout) => None,
+                        Err(RecvTimeoutError::Disconnected) => return,
+                    }
                 };
 
                 match message {
@@ -116,6 +125,16 @@ impl RenderThread {
             tx.send(message).unwrap();
 
             self.thread = Some((tx.clone(), thread::spawn(move || Self::boot(rx))));
+        }
+    }
+}
+
+impl Drop for RenderThread {
+    /// Tell a running thread to exit when its owner goes away without
+    /// calling `stop`.
+    fn drop(&mut self) {
+        if let Some((tx, _)) = &self.thread {
+            let _ = tx.send(Message::Shutdown);
         }
     }
 }
