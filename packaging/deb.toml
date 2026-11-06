@@ -39,6 +39,12 @@ src = "tetron-browser"
 dst = "usr/bin/tetron-browser"
 mode = "0755"
 
+# twww: the short command, the same wrapper.
+[[files]]
+src = "tetron-browser"
+dst = "usr/bin/twww"
+mode = "0755"
+
 [[files]]
 src = "copyright"
 dst = "usr/share/doc/tetron-browser/copyright"

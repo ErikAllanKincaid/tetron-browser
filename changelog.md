@@ -9,6 +9,7 @@ First published release of tetron-browser (the v0.15.0 tag was never released).
 ### Changes
 
 - Releases are built by GitHub Actions: the linux-amd64 zip, its .sha256 and a .deb for Debian 12 and later (packaging/deb.toml, built with tetron-packaging)
+- `twww` is a short command for `tetron-browser`
 - The Chromium program is named tetron-browser, so ps and htop show the product name
 - The `tetron-browser` command keeps the browser profile (cookies, logins, cache) in `~/.config/tetron-browser`; Chromium defaulted to the read-only install directory
 
