@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.3+tetron1] - 2026-11-06
 
+### Changes
+
+- Renamed to tetron-browser, a maintained continuation of Carbonyl: `--version` and `--help` say tetron-browser
+
 ### Bug Fixes
 
 - Clip draw rectangles to the terminal cell buffer: resizing to 1 or 2 columns panicked the render thread, and the next message to it aborted the browser with SIGTRAP

@@ -1,15 +1,15 @@
-# tetron-carbonyl
+# tetron-browser
 
-A maintained continuation of [Carbonyl](https://github.com/fathyb/carbonyl) by Fathy Boundjadj, whose last release (v0.0.3) is from February 2023. It is the web browser of [TetronOS](https://github.com/ErikAllanKincaid/tetron-os) and the [tetron-wm](https://github.com/ErikAllanKincaid/tetron-wm) terminal desktop. The program is still called `carbonyl`; the license (BSD-3-Clause) and the original copyright are unchanged.
+A web browser for the terminal: a maintained continuation of [Carbonyl](https://github.com/fathyb/carbonyl) by Fathy Boundjadj, whose last release (v0.0.3) is from February 2023. It renders pages with Chromium and draws them in the terminal with truecolor blocks, mouse and keyboard. It is the web browser of [TetronOS](https://github.com/ErikAllanKincaid/tetron-os) and the [tetron-wm](https://github.com/ErikAllanKincaid/tetron-wm) terminal desktop. The license (BSD-3-Clause) and the original copyright are unchanged.
 
-Changes over upstream v0.0.3 (see [changelog.md](changelog.md)):
+The command is `tetron-browser`. Changes over Carbonyl v0.0.3 (see [changelog.md](changelog.md)):
 
 - Resizing a window down to one or two columns no longer crashes the browser.
 - The render thread exits instead of spinning when its channel closes, and a dead render thread no longer takes the browser down.
 
-Releases ship the upstream v0.0.3 Chromium runtime with the rebuilt `libcarbonyl.so`, built on Debian 12 (glibc 2.34 or newer is enough). Debian and TetronOS users get it as the `tetron-carbonyl` package.
+Releases ship the Carbonyl v0.0.3 Chromium runtime with the rebuilt `libcarbonyl.so`, built on Debian 12 (glibc 2.34 or newer is enough). Debian and TetronOS users get it as the `tetron-browser` package.
 
-The original README follows.
+The original Carbonyl README follows; its commands say `carbonyl`.
 
 ---
 

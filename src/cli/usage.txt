@@ -1,10 +1,10 @@
-   O    O      Carbonyl is a Chromium based browser for the terminal.
-    \  /       
+   O    O      tetron-browser is a Chromium based browser for the terminal,
+    \  /       a maintained continuation of Carbonyl.
 O —— Cr —— O   In addition to the following options,
-    /  \       Carbonyl also supports most Chromium options.
+    /  \       it also supports most Chromium options.
    O    O      
 
-Usage: carbonyl [options] [url]
+Usage: tetron-browser [options] [url]
 
 Options:
     -f, --fps=<fps>            set the maximum number of frames per second (default: 60)
