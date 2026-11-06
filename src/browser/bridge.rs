@@ -307,6 +307,14 @@ extern "C" fn post_task_handler(callback: *mut c_void) {
     closure()
 }
 
+/// `post_task` for the other browser modules.
+pub(super) unsafe fn post_task_raw<F>(handle: extern "C" fn(extern "C" fn(*mut c_void), *mut c_void), run: F)
+where
+    F: FnMut() + Send + 'static,
+{
+    post_task(handle, run)
+}
+
 unsafe fn post_task<F>(handle: extern "C" fn(extern "C" fn(*mut c_void), *mut c_void), run: F)
 where
     F: FnMut() + Send + 'static,
@@ -324,6 +332,12 @@ where
 pub extern "C" fn carbonyl_renderer_listen(bridge: RendererPtr, delegate: *mut BrowserDelegate) {
     let bridge = unsafe { &*bridge };
     let delegate = unsafe { *delegate };
+
+    // Chromium has installed its SIGWINCH handler by now; run it on the
+    // browser main thread instead of whichever thread gets the signal.
+    if !super::resize_signal::route_to_main_thread(delegate.post_task) {
+        log::warning!("could not route SIGWINCH to the browser main thread");
+    }
 
     use input::*;
 

@@ -4,7 +4,7 @@ A web browser for the terminal: a maintained continuation of [Carbonyl](https://
 
 The command is `tetron-browser`. Like every tetron add-on, its minor version follows tetron core (0.15.x). Changes over Carbonyl v0.0.3 (see [changelog.md](changelog.md)):
 
-- Resizing a window down to one or two columns no longer crashes the browser.
+- Resizing a window no longer crashes the browser (a resize ran on the wrong thread from a signal handler, and very small windows overflowed the cell buffer).
 - The render thread exits instead of spinning when its channel closes, and a dead render thread no longer takes the browser down.
 
 Releases ship the Carbonyl v0.0.3 Chromium runtime with the rebuilt `libcarbonyl.so`, built on Debian 12 (glibc 2.34 or newer is enough). Debian and TetronOS users get it as the `tetron-browser` package.

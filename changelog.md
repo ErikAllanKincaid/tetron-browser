@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Resizing no longer crashes the browser with SIGTRAP: Chromium's SIGWINCH handler resized the web contents inside the signal handler, on whichever thread got the signal (often the sandbox IPC thread, whose thread check stopped the process). The handler now only wakes a dispatcher, which runs the resize on the browser main thread once per burst
 - Clip draw rectangles to the terminal cell buffer: resizing to 1 or 2 columns panicked the render thread, and the next message to it aborted the browser with SIGTRAP
 - A message to a dead render thread is dropped instead of panicking across the FFI boundary
 - The render thread exits when its channel disconnects instead of looping; the frame deadline saturates; dropping the renderer stops the thread
