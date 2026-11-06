@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.3+tetron1] - 2026-11-06
+## [0.15.0] - 2026-11-06
 
 ### Changes
 
 - Renamed to tetron-browser, a maintained continuation of Carbonyl: `--version` and `--help` say tetron-browser
+- Versioned with the tetron suite: the minor version follows tetron core (0.15), based on Carbonyl 0.0.3
 
 ### Bug Fixes
 

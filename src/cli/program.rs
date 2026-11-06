@@ -17,7 +17,7 @@ impl CommandLineProgram {
                 println!("{}", include_str!("usage.txt"))
             }
             CommandLineProgram::Version => {
-                println!("tetron-browser {}", env!("CARGO_PKG_VERSION"))
+                println!("tetron-browser {} (Carbonyl 0.0.3)", env!("CARGO_PKG_VERSION"))
             }
         }
 
