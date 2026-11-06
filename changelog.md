@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.3+tetron1] - 2026-11-06
+
+### Bug Fixes
+
+- Clip draw rectangles to the terminal cell buffer: resizing to 1 or 2 columns panicked the render thread, and the next message to it aborted the browser with SIGTRAP
+- A message to a dead render thread is dropped instead of panicking across the FFI boundary
+- The render thread exits when its channel disconnects instead of looping; the frame deadline saturates; dropping the renderer stops the thread
+
 ## [0.0.3] - 2023-02-18
 
 ### 🚀 Features
