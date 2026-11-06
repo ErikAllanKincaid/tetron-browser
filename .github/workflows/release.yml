@@ -74,7 +74,7 @@ jobs:
         id: deb
         uses: ErikAllanKincaid/tetron-packaging@71b3876c5a34bb7fab8e8558fc87d89f8c228bdc
         with:
-          binary: packaging/tree/carbonyl
+          binary: packaging/tree/tetron-browser
           deb-toml: packaging/deb.toml
           version: ${{ needs.decide.outputs.tag }}
           arch: amd64

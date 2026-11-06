@@ -2,4 +2,4 @@
 # The Chromium runtime finds its data files and libraries next to its own
 # binary. Its profile (cookies, logins, cache) goes to the user config
 # directory: by default Chromium would try the read-only install directory.
-exec /usr/lib/tetron-browser/carbonyl --user-data-dir="${XDG_CONFIG_HOME:-$HOME/.config}/tetron-browser" "$@"
+exec /usr/lib/tetron-browser/tetron-browser --user-data-dir="${XDG_CONFIG_HOME:-$HOME/.config}/tetron-browser" "$@"
