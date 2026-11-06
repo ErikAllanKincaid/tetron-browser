@@ -63,7 +63,7 @@ pub fn route_to_main_thread(post_task: PostTask) -> bool {
         WAKE_FD.store(write_fd, Ordering::SeqCst);
 
         let spawned = std::thread::Builder::new()
-            .name("carbonyl-winch".into())
+            .name("resize-signal".into())
             .spawn(move || dispatch(read_fd, post_task, previous));
 
         if spawned.is_err() {
@@ -143,7 +143,7 @@ mod tests {
         std::thread::sleep(COALESCE * 4);
 
         // Never on the signalled thread: only through post_task.
-        assert_eq!(CALLED_ON.lock().unwrap().as_deref(), Some("carbonyl-winch"));
+        assert_eq!(CALLED_ON.lock().unwrap().as_deref(), Some("resize-signal"));
         assert_eq!(CALLS.load(Ordering::SeqCst), 1, "a burst is one resize");
 
         // A later resize is delivered again.

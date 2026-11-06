@@ -3,7 +3,8 @@
 # Chromium runtime with libcarbonyl.so rebuilt from this tree on Debian 12
 # (glibc 2.36), so the result runs on Debian 12 and later.
 # Usage: scripts/release-tetron-browser.sh OUTDIR
-# Writes OUTDIR/tetron-browser.linux-amd64.zip and its .sha256.
+# Writes OUTDIR/tetron-browser.linux-amd64.zip and its .sha256. The Chromium
+# program "carbonyl" is renamed tetron-browser in the zip.
 set -eu
 OUT=$1
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -34,7 +35,10 @@ date = (2026, 11, 6, 0, 0, 0)  # fixed, so the same inputs give the same zip
 zin = zipfile.ZipFile(src)
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zo:
     for i in sorted(zin.infolist(), key=lambda i: i.filename):
-        zi = zipfile.ZipInfo(new + i.filename[len(old):], date)
+        rel = i.filename[len(old):]
+        # The Chromium program is named after the product, so ps and htop
+        # show tetron-browser; it finds its files next to itself.
+        zi = zipfile.ZipInfo(new + ("tetron-browser" if rel == "carbonyl" else rel), date)
         zi.external_attr = i.external_attr
         zi.compress_type = zipfile.ZIP_STORED if i.is_dir() else zipfile.ZIP_DEFLATED
         data = open(lib, "rb").read() if i.filename == old + "libcarbonyl.so" else zin.read(i)
