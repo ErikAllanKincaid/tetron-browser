@@ -72,7 +72,7 @@ jobs:
 
       - name: Build .deb
         id: deb
-        uses: ErikAllanKincaid/tetron-packaging@71b3876c5a34bb7fab8e8558fc87d89f8c228bdc
+        uses: tetronos/tetron-packaging@71b3876c5a34bb7fab8e8558fc87d89f8c228bdc
         with:
           binary: packaging/tree/tetron-browser
           deb-toml: packaging/deb.toml

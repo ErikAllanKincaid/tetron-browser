@@ -1,4 +1,4 @@
-# Package description for mkdeb (https://github.com/ErikAllanKincaid/tetron-packaging),
+# Package description for mkdeb (https://github.com/tetronos/tetron-packaging),
 # built by the release workflow from the release zip, which is unpacked into
 # packaging/tree/ first. Paths are relative to this file.
 name = "tetron-browser"
@@ -11,7 +11,7 @@ with a rebuilt libcarbonyl.so. The command is tetron-browser; its files are
 in /usr/lib/tetron-browser."""
 section = "web"
 license = "BSD-3-Clause"
-homepage = "https://github.com/ErikAllanKincaid/tetron-browser"
+homepage = "https://github.com/tetronos/tetron-browser"
 maintainer = "TetronOS <noreply@tetron.invalid>"
 # The earlier TetronOS package of upstream Carbonyl.
 # libcarbonyl.so needs glibc 2.34; mkdeb reads only the Chromium program (2.17).

@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: tetron-browser (continuation of Carbonyl by Fathy Boundjadj)
-Source: https://github.com/ErikAllanKincaid/tetron-browser/releases
+Source: https://github.com/tetronos/tetron-browser/releases
 Comment: Releases ship the Carbonyl v0.0.3 Chromium runtime
  (https://github.com/fathyb/carbonyl) with libcarbonyl.so rebuilt from the
  tetron-browser source. The bundled Chromium components carry their own
