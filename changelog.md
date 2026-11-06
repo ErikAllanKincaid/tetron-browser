@@ -2,17 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.1] - 2026-11-06
+
+First published release of tetron-browser (the v0.15.0 tag was never released).
+
+### Changes
+
+- Releases are built by GitHub Actions: the linux-amd64 zip, its .sha256 and a .deb for Debian 12 and later (packaging/deb.toml, built with tetron-packaging)
+- The Chromium program is named tetron-browser, so ps and htop show the product name
+- The `tetron-browser` command keeps the browser profile (cookies, logins, cache) in `~/.config/tetron-browser`; Chromium defaulted to the read-only install directory
+
+### Bug Fixes
+
+- Resizing no longer crashes the browser with SIGTRAP: Chromium's SIGWINCH handler resized the web contents inside the signal handler, on whichever thread got the signal (often the sandbox IPC thread, whose thread check stopped the process). The handler now only wakes a dispatcher, which runs the resize on the browser main thread once per burst
+
 ## [0.15.0] - 2026-11-06
 
 ### Changes
 
-- Releases are built by GitHub Actions on a v* tag: the linux-amd64 zip, its .sha256 and a .deb for Debian 12 and later (packaging/deb.toml, built with tetron-packaging)
 - Renamed to tetron-browser, a maintained continuation of Carbonyl: `--version` and `--help` say tetron-browser
 - Versioned with the tetron suite: the minor version follows tetron core (0.15), based on Carbonyl 0.0.3
 
 ### Bug Fixes
 
-- Resizing no longer crashes the browser with SIGTRAP: Chromium's SIGWINCH handler resized the web contents inside the signal handler, on whichever thread got the signal (often the sandbox IPC thread, whose thread check stopped the process). The handler now only wakes a dispatcher, which runs the resize on the browser main thread once per burst
 - Clip draw rectangles to the terminal cell buffer: resizing to 1 or 2 columns panicked the render thread, and the next message to it aborted the browser with SIGTRAP
 - A message to a dead render thread is dropped instead of panicking across the FFI boundary
 - The render thread exits when its channel disconnects instead of looping; the frame deadline saturates; dropping the renderer stops the thread
