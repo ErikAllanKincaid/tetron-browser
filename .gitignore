@@ -11,3 +11,4 @@ node_modules/
 !/chromium/patches
 /packages/*/build
 /packaging/tree/
+/dist/
