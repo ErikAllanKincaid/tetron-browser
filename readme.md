@@ -1,6 +1,6 @@
 # tetron-browser
 
-A web browser for the terminal: a maintained continuation of [Carbonyl](https://github.com/fathyb/carbonyl) by Fathy Boundjadj, whose last release (v0.0.3) is from February 2023. It renders pages with Chromium and draws them in the terminal with truecolor blocks, mouse and keyboard. It is the web browser of [TetronOS](https://github.com/ErikAllanKincaid/tetron-os) and the [tetron-wm](https://github.com/ErikAllanKincaid/tetron-wm) terminal desktop. The license (BSD-3-Clause) and the original copyright are unchanged.
+A web browser for the terminal: a maintained continuation of [Carbonyl](https://github.com/fathyb/carbonyl) by Fathy Boundjadj, whose last release (v0.0.3) is from February 2023. It renders pages with Chromium and draws them in the terminal with truecolor blocks, mouse and keyboard. It is the web browser of [TetronOS](https://github.com/tetronos/tetron-os) and the [tetron-wm](https://github.com/tetronos/tetron-wm) terminal desktop. The license (BSD-3-Clause) and the original copyright are unchanged.
 
 The command is `tetron-browser`, or `twww` for short. Like every tetron add-on, its minor version follows tetron core (0.15.x). Changes over Carbonyl v0.0.3 (see [changelog.md](changelog.md)):
 
