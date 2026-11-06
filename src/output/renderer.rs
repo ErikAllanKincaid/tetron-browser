@@ -202,18 +202,30 @@ impl Renderer {
     where
         F: FnMut(&mut Cell),
     {
-        let origin = bounds.origin.cast::<usize>();
-        let size = bounds.size.cast::<usize>();
-        let viewport_width = self.size.width as usize;
-        let top = origin.y;
-        let bottom = top + size.height;
+        // Clip the rectangle to the cell buffer: in a very small terminal
+        // Chromium still asks for rectangles (such as the navigation bar)
+        // wider than the viewport, which indexed past the buffer and killed
+        // the browser on resize.
+        let width = self.size.width as i64;
+
+        if width <= 0 {
+            return;
+        }
+
+        let rows = self.cells.len() as i64 / width;
+        let (x, y) = (bounds.origin.x as i64, bounds.origin.y as i64);
+        let (w, h) = (bounds.size.width as i64, bounds.size.height as i64);
+        let left = x.clamp(0, width);
+        let right = (x + w).clamp(left, width);
+        let top = y.clamp(0, rows);
+        let bottom = (y + h).clamp(top, rows);
 
         // Iterate over each row
-        for y in top..bottom {
-            let left = y * viewport_width + origin.x;
-            let right = left + size.width;
+        for row in top..bottom {
+            let start = (row * width + left) as usize;
+            let end = (row * width + right) as usize;
 
-            for (_, current) in self.cells[left..right].iter_mut() {
+            for (_, current) in self.cells[start..end].iter_mut() {
                 draw(current)
             }
         }
@@ -280,5 +292,44 @@ impl Renderer {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Resizing a window down to one or two cells made the navigation bar
+    /// rectangle wider than the buffer and panicked the render thread.
+    #[test]
+    fn fill_rect_is_clipped_to_tiny_viewports() {
+        let red = Color::new(255, 0, 0);
+        for (w, h) in [(1, 1), (2, 2), (1, 40), (40, 1), (3, 8)] {
+            let mut r = Renderer::new();
+            r.set_size(Size::new(w, h));
+            r.fill_rect(Rect::new(0, 0, 80, 1), red);
+            r.fill_rect(Rect::new(-5, -5, 200, 200), red);
+            r.fill_rect(Rect::new(500, 500, 10, 10), red);
+            assert!(r.cells.iter().all(|(_, c)| c.quadrant.0 == red));
+        }
+    }
+
+    #[test]
+    fn fill_rect_inside_viewport_is_unchanged() {
+        let (red, blue) = (Color::new(255, 0, 0), Color::new(0, 0, 255));
+        let mut r = Renderer::new();
+        r.set_size(Size::new(10, 5));
+        r.fill_rect(Rect::new(0, 0, 10, 6), blue);
+        r.fill_rect(Rect::new(2, 1, 3, 2), red);
+        let red_cells: Vec<usize> = r.cells.iter().enumerate()
+            .filter(|(_, (_, c))| c.quadrant.0 == red).map(|(i, _)| i).collect();
+        assert_eq!(red_cells, vec![12, 13, 14, 22, 23, 24]);
+    }
+
+    #[test]
+    fn zero_width_viewport_draws_nothing() {
+        let mut r = Renderer::new();
+        r.fill_rect(Rect::new(0, 0, 10, 10), Color::new(1, 2, 3));
+        assert!(r.cells.is_empty());
     }
 }

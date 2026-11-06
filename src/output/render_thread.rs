@@ -118,7 +118,9 @@ impl RenderThread {
     /// Creates a new thread if enabled and needed.
     fn send(&mut self, message: Message) {
         if let Some((tx, _)) = &self.thread {
-            tx.send(message).unwrap()
+            // The thread is gone only after it panicked; a panic here would
+            // cross the FFI boundary and abort the whole browser.
+            let _ = tx.send(message);
         } else if self.enabled {
             let (tx, rx) = mpsc::channel();
 
